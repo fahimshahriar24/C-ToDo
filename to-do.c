@@ -82,6 +82,7 @@ struct Task dequeuePending();
 struct BSTNode* createBSTNode(struct Task task);
 
 // ----------------- MAIN -----------------
+// Main function - displays menu and handles user input in a loop
 int main() {
     int choice;
     
@@ -130,6 +131,7 @@ int main() {
 
 // ----------------- CORE FUNCTIONS -----------------
 
+// Adds a new task to the active linked list and BST
 void addTask() {
     struct Task newTask;
     
@@ -161,6 +163,7 @@ void addTask() {
     printf("Task added successfully!\n");
 }
 
+// Displays all active tasks with progress tracking
 void showTasks() {
     if(activeHead == NULL) {
         printf("\n--- Active Tasks ---\n");
@@ -195,6 +198,7 @@ void showTasks() {
     printf("\n");
 }
 
+// Deletes a task from active list and saves it to undo stack
 void deleteTask() {
     if(activeHead == NULL) {
         printf("\n--- Delete Task ---\n");
@@ -231,6 +235,7 @@ void deleteTask() {
     printf("Task deleted! (You can undo with option 8)\n");
 }
 
+// Marks a selected task as completed
 void markAsDone() {
     if(activeHead == NULL) {
         printf("\n--- Mark Task as Done ---\n");
@@ -265,6 +270,7 @@ void markAsDone() {
     printf("Task \"%s\" marked as completed!\n", temp->task.name);
 }
 
+// Adds a new task to the pending queue (FIFO)
 void addPendingTask() {
     struct Task newTask;
     
@@ -278,7 +284,7 @@ void addPendingTask() {
     getchar();
     newTask.isDone = 0;
     
-    // Validate priority
+    // Check priority
     if(newTask.priority < 1 || newTask.priority > 3) {
         printf("Invalid priority! Setting to Medium (2).\n");
         newTask.priority = 2;
@@ -288,6 +294,7 @@ void addPendingTask() {
     printf("Task added to pending queue!\n");
 }
 
+// Displays all tasks in the pending queue
 void showPendingTasks() {
     if(!pendingFront) {
         printf("\n--- Pending Tasks ---\n");
@@ -309,6 +316,7 @@ void showPendingTasks() {
     printf("Total pending: %d tasks\n", i-1);
 }
 
+// Moves the front pending task to active list
 void movePendingToActive() {
     if(!pendingFront) {
         printf("\n--- Move Pending to Active ---\n");
@@ -327,6 +335,7 @@ void movePendingToActive() {
     printf("Task \"%s\" moved to active list!\n", t.name);
 }
 
+// Restores the last deleted task from undo stack
 void undoDelete() {
     if(!undoTop) {
         printf("\n--- Undo Delete ---\n");
@@ -345,6 +354,7 @@ void undoDelete() {
     printf("Task \"%s\" restored!\n", t.name);
 }
 
+// Searches for a task by name using linear search
 void searchTaskByName() {
     char name[MAX_LENGTH];
     
@@ -379,6 +389,7 @@ void searchTaskByName() {
 }
 
 // ----------------- BST FUNCTIONS -----------------
+// Creates a new BST node with the given task
 struct BSTNode* createBSTNode(struct Task task) {
     struct BSTNode *node = (struct BSTNode*)malloc(sizeof(struct BSTNode));
     node->task = task;
@@ -386,6 +397,7 @@ struct BSTNode* createBSTNode(struct Task task) {
     return node;
 }
 
+// Inserts a task into BST based on priority
 void insertBST(struct Task task) {
     struct BSTNode **current = &bstRoot;
     while(*current) {
@@ -397,6 +409,7 @@ void insertBST(struct Task task) {
     *current = createBSTNode(task);
 }
 
+// Displays BST using BFS (level-order traversal)
 void displayBST_BFS() {
     if(!bstRoot) {
         printf("\n--- Tasks by Priority (BST) ---\n");
@@ -443,6 +456,7 @@ void displayBST_BFS() {
 }
 
 // ----------------- STACK & QUEUE HELPERS -----------------
+// Pushes a task onto the undo stack (LIFO)
 void pushUndo(struct Task task) {
     struct StackNode *node = (struct StackNode*)malloc(sizeof(struct StackNode));
     node->task = task;
@@ -450,6 +464,7 @@ void pushUndo(struct Task task) {
     undoTop = node;
 }
 
+// Pops a task from the undo stack (LIFO)
 struct Task popUndo() {
     struct Task t = undoTop->task;
     struct StackNode *temp = undoTop;
@@ -458,6 +473,7 @@ struct Task popUndo() {
     return t;
 }
 
+// Adds a task to the rear of pending queue (FIFO)
 void enqueuePending(struct Task task) {
     struct QueueNode *node = (struct QueueNode*)malloc(sizeof(struct QueueNode));
     node->task = task;
@@ -467,6 +483,7 @@ void enqueuePending(struct Task task) {
     pendingRear = node;
 }
 
+// Removes and returns front task from pending queue (FIFO)
 struct Task dequeuePending() {
     struct QueueNode *temp = pendingFront;
     struct Task t = temp->task;
@@ -476,7 +493,7 @@ struct Task dequeuePending() {
     return t;
 }
 
-// Clear Screen (Windows)
+// Clears the console screen
 void clearScreen() {
     system("cls");
 }
